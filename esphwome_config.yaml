@@ -1,0 +1,361 @@
+# ESPHome instellingen:
+esphome:
+  name: "fairybell-achtertuin"
+  friendly_name: "Fairybell Achtertuin"
+  comment: "Tuya BK7231T / WB2S"  
+  on_boot: 
+    then:
+      - light.control: 
+          id: fairybell_achtertuin
+          state: !lambda
+            return id(laatste_lamp_staat);
+          brightness: 100%      
+
+# Specifieke Bord Instellingen:
+bk72xx:
+  board: wb2s
+
+# Schakel logging in:
+logger:
+
+# Debug:
+debug:
+  update_interval: 10s
+
+# Home Assistant API aan:
+api:
+  encryption:
+    key: !secret api_password
+
+# OTA instellingen:
+ota:
+  - platform: esphome  
+    password: "!secret ota_password"
+
+# WiFi instellingen:
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  power_save_mode: none
+
+  # Statische IP instellingen:
+  manual_ip:
+    static_ip: xxx.xxx.xxx.xxx
+    gateway: xxx.xxx.xxx.xxx
+    subnet: xxx.xxx.xxx.xxx
+
+# Tijd Synchroniseren met Home Assistant:
+time:
+  - platform: homeassistant
+    id: huidige_tijd
+    on_time_sync:
+      - component.update: uptime_timestamp
+
+# Laatste staat herstellen:
+globals:
+  - id: laatste_lamp_staat
+    type: boolean
+    restore_value: yes
+    initial_value: 'false'            
+      
+# PWM Outputs
+output:
+  - platform: libretiny_pwm
+    id: PWM4
+    pin: 24
+    max_power: 100%
+    frequency: 1000 Hz
+# - platform: libretiny_pwm
+    #id: PWM5
+    #pin: 26
+    #max_power: 100%
+    #requency: 1000 Hz    
+
+##############################################################################
+#  https://docs.libretiny.eu/boards/wb2s/                                    #
+#----------------------------------------------------------------------------#
+#  https://docs.libretiny.eu/docs/flashing/tools/ltchiptool/#gui-application #
+#----------------------------------------------------------------------------#
+#  ltchiptool flash write fairybell-achtertuin-0x011000.rbl                  #
+#-----------------------------------------------------------+----------------#
+#  PWM informatie:                                          #
+#```````````````````````````````````````````````````````````#
+#  PWM0 = P6 = Fysieke knop op adapter                      #
+#  PWM2 = P8 = Status LED in fysieke knop adapter           #
+#  PMW4 = P24 = Warm Wit = Fairybell achtertuin             #
+#  PWM5 = P26 = RGB/W = Fairybell voortuin en kerstboom     #
+#  ! Let op ! Verschil in PWM's tussen merken!              #
+#___________________________________________________________#
+#############################################################
+
+# Fairybell
+light:
+  - platform: status_led
+    id: groene_status_led
+    name: "GroeneKnop"
+    pin:
+      number: 8
+    internal: true
+
+# Hbridge om de beide PWM kanalen te koppelen tot een werkbare lamp  
+# Niet in gebruik omdat Hbridge flikkert zodra beide kanalen gekoppeld zijn!  
+  #- platform: hbridge
+    #id: fairybell_achtertuin
+    #name: "Fairybell Achtertuin"
+    #icon: mdi:string-lights
+    #pin_a: PWM4
+    #pin_b: PWM5
+    #on_turn_on:
+    #- light.turn_on: groene_status_led
+    #on_turn_off:
+    #- light.turn_off: groene_status_led
+
+# Warm-Wit    
+  - platform: monochromatic
+    id: fairybell_achtertuin
+    name: "Fairybell Achtertuin"
+    icon: mdi:string-lights
+    default_transition_length: 0.85s
+    output: PWM4
+    on_turn_on:
+      - globals.set:
+          id: laatste_lamp_staat
+          value: 'true'      
+      - light.turn_on: groene_status_led
+    on_turn_off:
+      - globals.set:
+          id: laatste_lamp_staat
+          value: 'false'      
+      - light.turn_off: groene_status_led
+
+# Effecten    
+    effects:
+      - random:
+          name: "Langzaam Willekeurig"
+          transition_length: 30s
+          update_interval: 30s
+      - random:
+          name: "Snel Willekeurig"
+          transition_length: 4s
+          update_interval: 5s
+      - pulse:
+          name: "Langzame Puls"
+          transition_length: 500ms
+          update_interval: 2s   
+          min_brightness: 0%
+          max_brightness: 100%                 
+      - pulse:
+          name: "Snelle Puls"
+          transition_length: 0.5s
+          update_interval: 0.5s
+          min_brightness: 0%
+          max_brightness: 100%
+      - pulse:
+          name: "Asymetrische Puls"
+          transition_length:
+            on_length: 1s
+            off_length: 500ms
+          update_interval: 1.5s
+      - strobe:
+          name: "Stroboscoop"                 
+      - pulse:
+          name: "Aan / Uit"
+          transition_length:
+            on_length: 1s
+            off_length: 500ms
+          update_interval: 1.5s
+          min_brightness: 0%
+          max_brightness: 100%          
+      - random:
+          name: "Willekeurig"
+          transition_length: 5s
+          update_interval: 5s
+      - flicker:
+          name: "Flikkeren"
+          alpha: 95%
+          intensity: 5%          
+# Hbridge effecten. Niet in gebruik omdat Hbridge flikkert zodra beide kanalen gekoppeld zijn!               
+      #- strobe:
+          #name: "RGB/W Knipperen"
+          #colors:
+            #- state: true
+              #brightness: 100%
+              #red: 100%
+              #green: 90%
+              #blue: 0%
+              #duration: 500ms
+            #- state: false
+              #duration: 250ms
+            #- state: true
+              #brightness: 100%
+              #red: 0%
+              #green: 100%
+              #blue: 0%
+              #duration: 500ms
+      #- strobe:
+          #name: "Knipperen 1"
+          #colors:
+            #- state: true
+              #color_temperature: 2000 K
+              #duration: 500ms
+            #- state: true
+              #color_temperature: 6534 K
+              #duration: 500ms
+      #- strobe:
+          #name: "Knipperen 2"
+          #colors:
+            #- state: true
+              #color_temperature: 2000 K
+              #duration: 500ms
+            #- state: true
+              #color_temperature: 3500 K
+              #duration: 500ms
+            #- state: true
+              #color_temperature: 6534 K
+              #duration: 500ms
+            #- state: true
+              #color_temperature: 3500 K
+              #duration: 500ms
+      #- lambda:
+          #name: "Vervagen"
+          #update_interval: 10s
+          #lambda: |-
+            #static int state = 0;
+            #auto call = id(fairybell).make_call();
+            #call.set_transition_length(10000);
+            #if (state == 0) {
+              #call.set_warm_white(1.0);
+              #call.set_cold_white(0.0);
+            #} else if (state ==1) {
+              #call.set_warm_white(0.0);
+              #call.set_cold_white(1.0);
+            #}
+            #call.perform();
+            #state += 1;
+            #if (state == 2)
+              #state = 0;
+      #- lambda:
+          #name: "Lamgzaam"
+          #update_interval: 2s
+          #lambda: |-
+            #static int state = 0;
+            #auto call = id(fairybell).make_call();
+            #call.set_transition_length(2000);
+            #if (state == 0) {
+              #call.set_warm_white(1.0);
+              #call.set_cold_white(0.2);
+            #} else if (state ==1) {
+              #call.set_warm_white(0.2);
+              #call.set_cold_white(1.0);
+            #}
+            #call.perform();
+            #state ++;
+            #if (state == 2)
+              #state = 0;            
+
+binary_sensor:
+  - platform: gpio
+    id: knop
+    pin:
+      number: 6
+      inverted: true
+      mode: INPUT_PULLUP
+    on_press:
+      then:
+        - light.toggle: 
+            id: fairybell_achtertuin
+  - platform: status
+    name: "Status"
+
+# Herstart Informatie:
+text_sensor:
+  - platform: debug
+    reset_reason:
+      name: Herstart Informatie
+# IP Adres & SSID
+  - platform: wifi_info
+    ip_address:
+      name: IP Address
+      icon: mdi:ip-network-outline
+    ssid:
+      name: SSID
+      icon: mdi:wifi-lock
+# ESPHome Versie
+  - platform: version
+    name: ESPHome Versie
+    hide_timestamp: true
+    entity_category: diagnostic
+# LibreTiny Versie
+  - platform: libretiny
+    version: 
+      name: LibreTiny Versie
+      entity_category: diagnostic
+
+# Herstart Node:
+button:
+  - platform: restart
+    name: "Herstart"
+    icon: "mdi:restart"
+
+sensor:
+# Uptime Sensor
+  - platform: uptime
+    name: Uptime Verborgen
+    id: uptime_seconds    
+    unit_of_measurement: h
+    device_class: duration
+    state_class: total_increasing
+    entity_category: diagnostic
+    update_interval: 10s
+    icon: mdi:clock-start
+    internal: true
+  - platform: template
+    id: uptime_timestamp
+    name: Uptime
+    device_class: timestamp
+    entity_category: diagnostic
+    accuracy_decimals: 0
+    update_interval: never
+    icon: mdi:clock-start
+    lambda: |-
+      static float timestamp = (
+        id(huidige_tijd).utcnow().timestamp - id(uptime_seconds).state
+      );
+      return timestamp;
+  - platform: internal_temperature
+    name: "CB2S Temperatuur"
+    id: temperatuur
+    icon: mdi:temperature-celsius
+    unit_of_measurement: "°C"
+    entity_category: "diagnostic"
+    device_class: temperature
+    update_interval: 10s      
+
+# Wi-Fi Signaal Info
+  - platform: wifi_signal
+    name: Wi-Fi Signaalsterkte dB
+    icon: mdi:wifi
+    id: wifi_signal_db
+    update_interval: 10s
+    entity_category: "diagnostic"
+  - platform: copy # Reports the WiFi signal strength in %
+    source_id: wifi_signal_db
+    name: Wi-Fi Signaalsterkte
+    icon: mdi:signal
+    filters:
+      - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
+    unit_of_measurement: "%"
+    entity_category: "diagnostic"
+    device_class: ""
+  - platform: template
+    name: Wi-Fi Kanaal
+    icon: mdi:wifi-settings
+    lambda: return WiFi.channel();
+    entity_category: "diagnostic"
+    accuracy_decimals: 0
+    update_interval: 60s      
+
+
+
+        
+        
