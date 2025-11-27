@@ -7,7 +7,7 @@ Hardware hacking the christmaslights adapter from [Smart adapter kerstverlichtin
 
 - Verwijder het deksel van de adapter (hier zit de fysieke knop en de stekker aansluiting in) door de lijm verbinding te breken met een stuk gereedschap naar eigen keuze
 - Verwijder de PCB met een platbek/telefoontang door deze naar buiten uit de behuizing te schuiven
-- Soldeer passende draden op de volgende pinnen: 3V3, GND, TXT en RX
+- Soldeer passende draden op de volgende pinnen: 3V3, GND, TX en RX
 - Zorg dat je een extra draad (2e draad) soldeerd op de GND (deze kun je later verbinden met de CEN-pin
 - Sluit vervolgens de gesoldeerde draden aan op jouw UART flasher volgens onderstaand diagram:
 ```
