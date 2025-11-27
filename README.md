@@ -43,5 +43,11 @@ I:     --------+        +--------------------
 > [!CAUTION]
 ```Wees geduldig! Het flash proces kan even duren. Mocht de chip na het flashen niet booten, probeer het flash proces opnieuw.```
 - Is het flashen voltooid? Mooi! Schakel de 3V3 voeding uit, koppel de UART adapter los en schakel de 3V3 voeding opnieuw in
-- Ga naar het ESPHome dashboard en check via de draadloze logs of het zojuist geflashte apparaat online komt/is.
+- Ga naar het ESPHome dashboard en check via de draadloze logs of het zojuist geflashte apparaat online komt/is
+- Node online? Top! Schakel de 3V3 voeding uit, desoldeer alle draden en check of alle solderingen nog juist zijn
+- Sluit jouw (kerst)verlichting aan en check of deze werkt zoals verwacht
+- Ja? Mooi! Schuif de PCB in zijn behuizing
+- Pak een heet lijm pistool (of andere lijm), spuit wat lijn in de rand van het deksel en breng het deksel aan op de behuizing van de adapter
+- Houdt stevig vast (of fixeer)
+- Enjoy! :)
 
