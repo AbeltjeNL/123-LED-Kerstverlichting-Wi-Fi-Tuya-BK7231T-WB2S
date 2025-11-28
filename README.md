@@ -51,3 +51,6 @@ I:     --------+        +--------------------
 - Houdt stevig vast (of fixeer)
 - Enjoy! :)
 
+> [!NOTE]
+Write basic ESPHome yaml configuration and translate to English. @AbeltjeNL!
+
