@@ -5,11 +5,11 @@
 
 Hardware hacking the christmaslights adapter from [Smart adapter kerstverlichting 31V | Wifi](https://www.123led.nl/123led-Smart-adapter-kerstverlichting-31V-Wifi-i9442-t5928.html) into ESPHome.
 
-- Verwijder het deksel van de adapter (hier zit de fysieke knop en de stekker aansluiting in) door de lijm verbinding te breken met een stuk gereedschap naar eigen keuze
-- Verwijder de PCB met een platbek/telefoontang door deze naar buiten uit de behuizing te schuiven
-- Soldeer passende draden (dupont) op de volgende pinnen: 3V3, GND, TX en RX
-- Zorg dat je een extra draad (2e draad) soldeerd op de GND (deze kun je later verbinden met de CEN-pin)
-- Sluit vervolgens de gesoldeerde draden aan op jouw UART flasher volgens onderstaand diagram:
+- Remove the adapter cover (this is where the physical button and plug connection are located) by breaking the adhesive bond with a tool of your choice
+- Remove the PCB using flat nose/phone pliers by sliding it out of the housing
+- Solder suitable wires (dupont) to the following pins: 3V3, GND, TX and RX
+- Make sure to solder an extra wire (2nd wire) to GND (you can connect this to the CEN pin later)
+- Next, connect the soldered wires to your UART flasher according to the diagram below:
 ```
 I:     --------+        +--------------------
 I:          PC |        | BK7231             
@@ -24,33 +24,32 @@ I:     --------+        +--------------------
 > [!IMPORTANT]
 ```The UART adapter's 3.3V power regulator is usually not enough. Instead, a regulated bench power supply, or a linear 1117-type regulator is recommended.```
 
-- Sluit de externe 3V3 voedingsbron aan
-- Verbind de UART adapter met een USB-poort op jouw systeem (zorg dat de juiste drivers geinstalleerd zijn) ;)
-- Compile jouw ESPHome configuratie zodat je een .rbl bestand krijgt. Download dit bestand naar de "Downloads" map
+- Connect the external 3V3 power source
+- Connect the UART adapter to a USB port on your system (make sure the correct drivers are installed) ;)
+- Compile your ESPHome configuration to create an .rbl file. Download this file to your Downloads folder.
 
 > [!NOTE]
-> Gebruik een van de flash tools van onderstaande link. Ik heb MacOS gebruikt. Met Windows is het helaas niet gelukt.
+> Use one of the flash tools from the link below. I used macOS. Unfortunately, it didn't work with Windows.
 ```https://docs.libretiny.eu/docs/flashing/tools/ltchiptool/#installation```
 
-- Vanuit MacOS terminal voer je de volgende commando's uit: ```pip install ltchiptool``` & ```pip install wxPython```
-- Navigeer naar de "Downloads" map. Als het goed is vind je hier jouw eerder gegenereerde ESPHome.rbl bestand
-- Rechtermuisknop, onder aan in het venster op de map "Downloads" en selecteer "Open in Terminal"
-- Zet de externe 3V3 voeding aan, de groene LED op de print begint te knipperen
-- Voer het volgende commando uit in het terminal venster: ```ltchiptool flash write bestandsnaam.rbl```
-- ltchiptool begint met het flashproces
-- Raak nu met de extra GND draad de CEN pin kortstondig aan
-- Je zult zien dat het flash proces nu begint
+- From MacOS terminal, run the following commands: ```pip install ltchiptool``` & ```pip install wxPython```
+- Navigate to the "Downloads" folder. You should find your previously generated ESPHome.rbl file there
+- Right-click on the "Downloads" folder at the bottom of the window and select "Open in Terminal"
+- Turn on the external 3V3 power supply, the green LED on the PCB starts flashing
+- Run the following command in the terminal window: ```ltchiptool flash write bestandsnaam.rbl```
+- ltchiptool starts the flashing process
+- Now briefly touch the CEN pin with the extra GND wire
+- You will see the flash process start now
 > [!CAUTION]
-```Wees geduldig! Het flash proces kan even duren. Mocht de chip na het flashen niet booten, probeer het flash proces opnieuw.```
-- Is het flashen voltooid? Mooi! Schakel de 3V3 voeding uit, koppel de UART adapter los en schakel de 3V3 voeding opnieuw in
-- Ga naar het ESPHome dashboard en check via de draadloze logs of het zojuist geflashte apparaat online komt/is
-- Node online? Top! Schakel de 3V3 voeding uit, desoldeer alle draden en check of alle solderingen nog juist zijn
-- Sluit jouw (kerst)verlichting aan en check of deze werkt zoals verwacht
-- Ja? Mooi! Schuif de PCB in zijn behuizing
-- Pak een heet lijm pistool (of andere lijm), spuit wat lijn in de rand van het deksel en breng het deksel aan op de behuizing van de adapter
-- Houdt stevig vast (of fixeer)
+```Be patient! The flash process may take a while. If the chip doesn't boot after flashing, try the flash process again. If you see an error/retry, stop flashing and start again! ```
+- Flashing complete? Great! Turn off the 3V3 power supply, disconnect the UART adapter, and turn the 3V3 power supply back on
+- Go to the ESPHome dashboard and check via the wireless logs whether the device you just flashed comes/is online
+- Node online? Great! Turn off the 3V3 power supply, desolder all wires, and check that all soldering is still correct
+- Connect your (Christmas) lights and check whether they work as expected
+- Yes? Great! Slide the PCB into its housing
+- Take a hot glue gun (or other glue), squirt some glue into the edge of the lid and apply the lid to the adapter body
+- Hold firmly (or fix)
 - Enjoy! :)
 
 > [!NOTE]
-Write basic ESPHome yaml configuration and translate to English. @AbeltjeNL!
-
+Write basic ESPHome yaml configuration. @AbeltjeNL!
