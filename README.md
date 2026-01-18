@@ -52,4 +52,4 @@ I:     --------+        +--------------------
 - Enjoy! :)
 
 > [!NOTE]
-Write basic ESPHome yaml configuration. @AbeltjeNL!
+Write basic ESPHome yaml configuration and include LT-Hbeidge component @AbeltjeNL!
